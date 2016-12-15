@@ -1,0 +1,636 @@
+FORMAT: 1A
+HOST: http://polls.apiblueprint.org/
+
+# EPR Online V2
+EPR Online API is a set of services available for driving the GUI of the EPR Online Applications.
+
+# Group Electronic Patient Record Authentication
+Related resources of the **Authentication API**
+
+## Authentication Collection [/login{?username,password,application_id}]
+An authentication service to request a token that can be used for other services.
+
++ Parameters
+    + username (required, string, `pejans`) ... Username
+    + password (required, string, `pejans`) ... Password
+    + application_id (required, number, `1`) ... Application ID
+
+### Perform a valid login request to receive an authentication token [POST]
++ Request
+
+    + Headers
+
+            content-type: application/x-www-form-urlencoded
+            
++ Response 200 (application/json)
+
+        {
+          "full_name": "Dr. Peter Jans",
+          "lang": "nl",
+          "photo": "TODO",
+          "token": "ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo"
+        }
+
+## Authentication Collection [/loginehealth{?riziv,application_id}]
+An authentication service to request a token that can be used for other services.
+
++ Parameters
+    + riziv (required, string, `1236516`) ... Riziv
+    + application_id (required, number, `1`) ... Application ID
+
+### Perform a valid login request to receive an authentication token [POST]
++ Request
+
+    + Headers
+
+            content-type: application/x-www-form-urlencoded
+
+
++ Response 200 (application/json)
+
+        {
+          "full_name": "Dr. Peter Jans",
+          "lang": "nl",
+          "photo": "TODO",
+          "token": "ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo"
+        }
+
+# Group Electronic Patient Record
+Common and Patient related resources of the **Electronic Patient Record API**
+
+## Patient [/patients{?token}]
+A patient service to get the list of patient for the given token.
+
+Extra information on the fields in the response:
+- photo: raw representation of the patient photo image
+- hospitalized: does the patient have an active visit in the hospital
+- shared_patient: is the patient shared between multiple practitioners (to be used to decide if the patient is treated in a group practice)
+
++ Parameters
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+
+
+### Get all Patients [GET]
++ Response 200 (application/json)
+
+        [
+            { 
+                "id":"1",
+                "lastname":"Jans",
+                "firstname":"David",
+                "birthdate":"19/07/1977",
+                "photo":"/9j/4AAQSkZJRgABAgEBLAEsAAD/2wBDABMNDhAODBMQDxAVFBMWHC4eHBoaHDkpKyIuQztHRkI7QUBKVGtaSk9lUEBBXX5eZW5yd3l3SFmDjIJ0i2t1d3P/wAALCADIAIwBAREA/8QA0gAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoLEAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4eLj5OXm5+jp6vHy8/T19vf4+fr/2gAIAQEAAD8A7Wiiiiiiio2uIlfYXAf+73/KlimjmUtE6uAcHB6Gn0UUUUUUUUUUUVBdXttZqGuZljB6Z6n8Kx7rxVBDIyxQ+YAcBvMAB/Q1m3fia4uomWNIoh2PJYe4Pb8qwZdQufN3PM5kHRixJH41Jb6i4fzAcP3cHk++a6TSfEpVRFekuOAJR1A9/X610kc0UqhopFcHoVOafRRRRRRRRQSAMngVgap4kjgM0Fup8xB/rCRj8PWuPvdVuLpyZZS59znFUHlJYfN+tKJWC4zTWk3HJ5NAbaeD1qWOVlbIPStfTtZmtJgYmAHGRgYNdTpevRXRVJ2CuxPJIC5zwBW1RRRRRRQSFBJIAHJJrndX1xHt2FuYSmSD5jLlsEdF/wAa4m5uN54UD6VW5NNCe1P8piOnSkMRHzYpChB9qUBhwelPXIq7azlCAc/hXZ6NrXmRpFcEsenmEj9a3gc9KKKKKK5jxNquHeyAHlKBuIIyW6gYz09a5S4umnzvUZ9VAH6CoEt2lPAPNXYdIlerkehnOSDmrEekbeq0q6UE+XaGQ9j2qSPR4ipUrioJdCKk7QCKrS6QUBOMVXOmyryBT7YtFIQ2VGMZFdJpWota4ibMkTHOc5I+n+FdGrB1DKcgjINLRRVTVL1bCzeUkbyCI1Pdq4G43zys7nLM25j6k0RWgc/MK1bW1RAMCtCNAAABVhVFPCcUuwelKUx0FIRxUMkQbPeq7RKR0qrNbKenDCoNxUjjmuk0K78+3aJny8fQEche39a06KK5XxZcD7VHEGBCJyPTP/1sVgQtvfBrSiQcYFXkXGMVZjXNWUWpNtG2lxxTStRsvNQOtV5Vw1UbkhDnua0fDtwwuDGScMOmR+B/nXSUUVxPiSKX7dOztETnPDYKqBwOe5z+hrHsgTMPQVuRfeFXlHSrEY4FWUAp5x2oAFLxRxUbAE1A45qrcVmXoyvHWrGh2/2qfaWCjacnuD2I/H+tdcuQoDHJxyaWiuK8VFWunYY3byp5ycADH06nisa1O1hzWzbnpWnHgipoj2qwlPpAaWimnjmoGNVJz1rMuD+8Fanh35Ls4XIdSCfTvXSUUVyPjPyxcwhUAk2ZZsckZ45/A1zsJw4rZgPArRhb5asxnmrKYqQLnpQRim4ORxxTiAByajZgeBVd+OaqTHk1mXXDg9q1tAJW4QLyGzn8q6SiiuQ8ZBvtsRKjb5Ywc9eTXOxf6xc1sR/dFX7Zhtq0siqOTS/akU/fAqZLkHo2akE2TSNLiq8l3GoO98VEuoQE8SA05rlG6HNQS8tx0qheD5K0dBlVJkLtjGf5V01FFcX4quWnvzHgbIflHHX1rAQ4kXjvW1FylKbkRjAqrc3zZ2ru3dgKpq1zJJ8isW9Ceau2l5PEwWRXU+jcVvWshlXOe1MvpjChNc/PLc3Mh2IcetQItwjKxVsN0ODg/T1rStp5Pulfxq3G7scMCKbeJlakskOenSurgz5Eeeu0fyp9FchrduTd3G4clsj8a554yJgPetmBSYwB6Uv2TBztJNOt9NVXMrD5+3tTYNKnjmyZmEJffsyevrV+6tY5Qz4+bHPP+eadpw2rtPam3yCSQKeneni1jSNgEXDDB57VUg0WOKcyrzk5wTxVoacu8suAx6+9KYCp+bbn2qvcJuGKs2cWBjrnpXRIuxFX0AFLRWPr0IJilx1+U/0/rXMXVvtkD471atGH3e9acWCRkVP5IbkcUhhPcn8ajn2qm2mWI+c0k3M9WIlVxg8VKtvg9ak8tU681WnxuyKqMM5q9ZAefEPStmiiqOsRmSyyByrA/wBP61zUwypDd6gtsh859q1I2PFWonI61KWyKpXTfNipbJOp9qZKu1ialtmyauVHITVaQ+9V8lQSBmtDTlLSqxBzWtRRSOiyIyMMqwwRXN6hYvBIQ0bMmflcLkEfhWb5TQykMjpnkBlI4/Grsb4HNWY344qYNxkmqNzOvnAE4FXLKWMDJPFRXU8SsfmFR2s6vL8pzWgH4pkjcVA33qfb20kp/dqDj1OK1bS2MC5cgueuOgqxRRRRWT4hiBhim7q238D/APqrJToOanj6U8nAPPFZGoLvyCT9RVFbi5hTbGzMv8qeIJbohpXfHpWvp8UdsAuT+NaPmqehpSQRmov4ua09LH7tz7gVdoooooqvqFv9qspIh94jK/UciuWV8LVmJuM1G83BqqxR2+dhipoktsY8xQfrT2NrGP8AWKD7GoZLiFCT5ox7mnW92krHY4P0rSjbMfPamFsmtjTl22oP94k1aooooooYhVLE4AGSa4cvhtpqzbvkbaJYPMODkDuRVC50t2bMNxIPY80yPSLlzzPn8KmGiOFLSTE/hT4tHgLAyAt9Sa01toY0ASNVA9BTmYImKSFWlkWNfvMcCujVQihVGABgUtFFFFFZPiS4MOnhQceY4B+g5P8AIfnXLzMfvCpIZPusOlX0fK9aUjI460glaLkUouGfg9Kmj9aczcYqtI3OSelWtLuBFN5rDj7p9ge9dDRRRRRRXLeKHe5cxp0iyBjucAn/AD7VkK26MH1FQCYwvtPQ9Kv21wDxnrWhDhhTmiDcUgt1XoeKlwoWqssuM88Cs57kvIQPWr1pIAVDNhScH6V0NleBo1EhxkA/Q9x+dXqKKKbJLHEAZHVc9Mnr9Kyr7VJRlYFEaf32PzH6Dt9awpJCylyxO2fJJ9DxVH7jMh42nFV7pdy5HWoLa5KPgnFblpeAgDP61dWYU8TKRjiq9xchQcGsm6vOoB60y1BY7zV6MljIg6iJm+la0b5kGOhdh+fP9atR3LvEoMjRsOhB9P8A9dWbe8k+7IyuR3KFf15H8qsi5UjhXPuo3D8xVWXUS6n7OpwDgyNgKPzrNlWebzHQ72GQzliqj8etZYjEbE/uyxIyyEn9SSTUwgMj3UI6uhYfUH/64rPvARMJR9yQAj8Rn/P0qFuRVC5jIbctMiuniI5q6mqYGCQfxpw1YeuPxqKbUC4O081FBG875PStWOLYoxVrTl33BOPvB4/0Bq9bgtZxyHqNjf8AjuP6VZYFYnZeCkhI/IgfqBUhSSTLpiRcb1QqCRn06fzFV3kiYjck6MBgqqB8H/gXI+h/limW++dBLMCFXKpEvBPsPQD16k57U11FzZzGRATGgeNP4FyCQMd/xzVPZhXUKONvAGOp9Pxq3ayBdQjLHiQKB/wJf8VFUb61dI2THCM0Y/D5x+hIrPQ5GD2qOWPcOnFZ9zBt5WqpBFCjJq1bw73FbNvEEHAqZzhcDrV7TYTFdhDztnH6xn/CrVuoWwZe4Rf/AENhUruyxysMchZPyIJ/macy4iiRW6xmIgHrj5T/ADFUFVZkV7mLe+0LkjpgYI/MGp4QovYRHkJ5JK59Dj/CkjbyraXP8UCf1FVhzLJjoI8n8NppzxHyI5E++EYL/vI2R/I1b1E/vHKjKyxLKv1U8/8AjpNc/ND5Uh2jj/6+P5Y/OmbciopIgwwRzVCa3Kk8UyKElgK1LeAIoq4i4FNUeZcxoOzA/rW/bRY1SZcdHjb/AMcYVHGNqz+oBP8A3zKx/rVlFVpYVPA2BT+RH+FQxoyxFRy0TD8dw2n/AMeGaS+hE8qSpuCugPHvX//Z",
+                "hospitalized":"false", 
+                "shared_patient":"true",
+                "new_events" :"true",
+                "unread_lab":"5",
+                "unread_rx":"5",
+                "unread_letter":"5",
+                "unread_messages":"2",
+                "future_appointments":"0"
+            },
+            {
+                "id":"2",
+                "lastname":"Denys",
+                "firstname":"Robbie",
+                "birthdate":"20/05/1988",
+                "photo":"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",
+                "hospitalized":"false", 
+                "shared_patient":"false",
+                "new_events" :"true",
+                "unread_lab":"2",
+                "unread_rx":"0",
+                "unread_letter":"1",
+                "unread_messages":"6",
+                "future_appointments":"1" 
+            },
+            {
+                "id":"3",
+                "lastname":"Bekaert",
+                "firstname":"Gert",
+                "birthdate":"22/03/1982",
+                "photo":"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",
+                "hospitalized":"true", 
+                "shared_patient":"false",
+                "new_events" :"true",
+                "unread_lab":"5",
+                "unread_rx":"9",
+                "unread_letter":"0",
+                "unread_messages":"7",
+                "future_appointments":"3" 
+            },
+            {
+                "id":"4",
+                "lastname":"Snyckers",
+                "firstname":"Dave",
+                "birthdate":"22/03/1980",
+                "photo":"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",
+                "hospitalized":"false", 
+                "shared_patient":"false",
+                "new_events" :"false",
+                "unread_lab":"0",
+                "unread_rx":"0",
+                "unread_letter":"0",
+                "unread_messages":"0",
+                "future_appointments":"0"
+            },
+            {
+                "id":"5",
+                "lastname":"Jansens",
+                "firstname":"Jef",
+                "birthdate":"22/03/1980",
+                "photo":"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",
+                "hospitalized":"false", 
+                "shared_patient":"false",
+                "new_events" :"false",
+                "unread_lab":"0",
+                "unread_rx":"0",
+                "unread_letter":"0",
+                "unread_messages":"0",
+                "future_appointments":"0"
+            },
+            {
+                "id":"6",
+                "lastname":"Janssen",
+                "firstname":"Jos",
+                "birthdate":"22/03/1980",
+                "photo":"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",
+                "hospitalized":"false", 
+                "shared_patient":"false",
+                "new_events" :"false",
+                "unread_lab":"0",
+                "unread_rx":"0",
+                "unread_letter":"0",
+                "unread_messages":"0",
+                "future_appointments":"0"
+            },
+            {
+                "id":"7",
+                "lastname":"Jannes",
+                "firstname":"Jeannine",
+                "birthdate":"22/03/1980",
+                "photo":"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",
+                "hospitalized":"false", 
+                "shared_patient":"false",
+                "new_events" :"false",
+                "unread_lab":"0",
+                "unread_rx":"0",
+                "unread_letter":"0",
+                "unread_messages":"0",
+                "future_appointments":"0"
+            }
+            
+        ]
+
+
+## Patients with new context [/patients/new{?token}]
+Retrieve list of patients for which new context is available.
+
+Context information contains:
+- unread_results: how many unread results are available for this patient and for this practitioner?
+- unread_messages: how many unread messages regarding patient results are available for this practitioner?
+- future_appointments: how many appointments are planned for this patient in the hospital?
+
++ parameters
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+
+### Get Patient Context [GET]
++ Response 200 (application/json)
+
+        [
+            { 
+                "id":"1",
+                "lastname":"Jans",
+                "firstname":"Peter",
+                "birthdate":"19/07/1977",
+                "photo":"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",
+                "hospitalized":"false", 
+                "shared_patient":"true",
+                "new_events" :"true",
+                "unread_lab":"5",
+                "unread_rx":"5",
+                "unread_letter":"5",
+                "unread_messages":"2",
+                "future_appointments":"0"
+            },
+            {
+                "id":"2",
+                "lastname":"Denys",
+                "firstname":"Robbie",
+                "birthdate":"20/05/1988",
+                "photo":"/9j/4AAQSkZJRgABAgEBLAEsAAD/2wBDABMNDhAODBMQDxAVFBMWHC4eHBoaHDkpKyIuQztHRkI7QUBKVGtaSk9lUEBBXX5eZW5yd3l3SFmDjIJ0i2t1d3P/wAALCADIAIwBAREA/8QA0gAAAQUBAQEBAQEAAAAAAAAAAAECAwQFBgcICQoLEAACAQMDAgQDBQUEBAAAAX0BAgMABBEFEiExQQYTUWEHInEUMoGRoQgjQrHBFVLR8CQzYnKCCQoWFxgZGiUmJygpKjQ1Njc4OTpDREVGR0hJSlNUVVZXWFlaY2RlZmdoaWpzdHV2d3h5eoOEhYaHiImKkpOUlZaXmJmaoqOkpaanqKmqsrO0tba3uLm6wsPExcbHyMnK0tPU1dbX2Nna4eLj5OXm5+jp6vHy8/T19vf4+fr/2gAIAQEAAD8A7Wiiiiiiio2uIlfYXAf+73/KlimjmUtE6uAcHB6Gn0UUUUUUUUUUUVBdXttZqGuZljB6Z6n8Kx7rxVBDIyxQ+YAcBvMAB/Q1m3fia4uomWNIoh2PJYe4Pb8qwZdQufN3PM5kHRixJH41Jb6i4fzAcP3cHk++a6TSfEpVRFekuOAJR1A9/X610kc0UqhopFcHoVOafRRRRRRRRQSAMngVgap4kjgM0Fup8xB/rCRj8PWuPvdVuLpyZZS59znFUHlJYfN+tKJWC4zTWk3HJ5NAbaeD1qWOVlbIPStfTtZmtJgYmAHGRgYNdTpevRXRVJ2CuxPJIC5zwBW1RRRRRRQSFBJIAHJJrndX1xHt2FuYSmSD5jLlsEdF/wAa4m5uN54UD6VW5NNCe1P8piOnSkMRHzYpChB9qUBhwelPXIq7azlCAc/hXZ6NrXmRpFcEsenmEj9a3gc9KKKKKK5jxNquHeyAHlKBuIIyW6gYz09a5S4umnzvUZ9VAH6CoEt2lPAPNXYdIlerkehnOSDmrEekbeq0q6UE+XaGQ9j2qSPR4ipUrioJdCKk7QCKrS6QUBOMVXOmyryBT7YtFIQ2VGMZFdJpWota4ibMkTHOc5I+n+FdGrB1DKcgjINLRRVTVL1bCzeUkbyCI1Pdq4G43zys7nLM25j6k0RWgc/MK1bW1RAMCtCNAAABVhVFPCcUuwelKUx0FIRxUMkQbPeq7RKR0qrNbKenDCoNxUjjmuk0K78+3aJny8fQEche39a06KK5XxZcD7VHEGBCJyPTP/1sVgQtvfBrSiQcYFXkXGMVZjXNWUWpNtG2lxxTStRsvNQOtV5Vw1UbkhDnua0fDtwwuDGScMOmR+B/nXSUUVxPiSKX7dOztETnPDYKqBwOe5z+hrHsgTMPQVuRfeFXlHSrEY4FWUAp5x2oAFLxRxUbAE1A45qrcVmXoyvHWrGh2/2qfaWCjacnuD2I/H+tdcuQoDHJxyaWiuK8VFWunYY3byp5ycADH06nisa1O1hzWzbnpWnHgipoj2qwlPpAaWimnjmoGNVJz1rMuD+8Fanh35Ls4XIdSCfTvXSUUVyPjPyxcwhUAk2ZZsckZ45/A1zsJw4rZgPArRhb5asxnmrKYqQLnpQRim4ORxxTiAByajZgeBVd+OaqTHk1mXXDg9q1tAJW4QLyGzn8q6SiiuQ8ZBvtsRKjb5Ywc9eTXOxf6xc1sR/dFX7Zhtq0siqOTS/akU/fAqZLkHo2akE2TSNLiq8l3GoO98VEuoQE8SA05rlG6HNQS8tx0qheD5K0dBlVJkLtjGf5V01FFcX4quWnvzHgbIflHHX1rAQ4kXjvW1FylKbkRjAqrc3zZ2ru3dgKpq1zJJ8isW9Ceau2l5PEwWRXU+jcVvWshlXOe1MvpjChNc/PLc3Mh2IcetQItwjKxVsN0ODg/T1rStp5Pulfxq3G7scMCKbeJlakskOenSurgz5Eeeu0fyp9FchrduTd3G4clsj8a554yJgPetmBSYwB6Uv2TBztJNOt9NVXMrD5+3tTYNKnjmyZmEJffsyevrV+6tY5Qz4+bHPP+eadpw2rtPam3yCSQKeneni1jSNgEXDDB57VUg0WOKcyrzk5wTxVoacu8suAx6+9KYCp+bbn2qvcJuGKs2cWBjrnpXRIuxFX0AFLRWPr0IJilx1+U/0/rXMXVvtkD471atGH3e9acWCRkVP5IbkcUhhPcn8ajn2qm2mWI+c0k3M9WIlVxg8VKtvg9ak8tU681WnxuyKqMM5q9ZAefEPStmiiqOsRmSyyByrA/wBP61zUwypDd6gtsh859q1I2PFWonI61KWyKpXTfNipbJOp9qZKu1ialtmyauVHITVaQ+9V8lQSBmtDTlLSqxBzWtRRSOiyIyMMqwwRXN6hYvBIQ0bMmflcLkEfhWb5TQykMjpnkBlI4/Grsb4HNWY344qYNxkmqNzOvnAE4FXLKWMDJPFRXU8SsfmFR2s6vL8pzWgH4pkjcVA33qfb20kp/dqDj1OK1bS2MC5cgueuOgqxRRRRWT4hiBhim7q238D/APqrJToOanj6U8nAPPFZGoLvyCT9RVFbi5hTbGzMv8qeIJbohpXfHpWvp8UdsAuT+NaPmqehpSQRmov4ua09LH7tz7gVdoooooqvqFv9qspIh94jK/UciuWV8LVmJuM1G83BqqxR2+dhipoktsY8xQfrT2NrGP8AWKD7GoZLiFCT5ox7mnW92krHY4P0rSjbMfPamFsmtjTl22oP94k1aooooooYhVLE4AGSa4cvhtpqzbvkbaJYPMODkDuRVC50t2bMNxIPY80yPSLlzzPn8KmGiOFLSTE/hT4tHgLAyAt9Sa01toY0ASNVA9BTmYImKSFWlkWNfvMcCujVQihVGABgUtFFFFFZPiS4MOnhQceY4B+g5P8AIfnXLzMfvCpIZPusOlX0fK9aUjI460glaLkUouGfg9Kmj9aczcYqtI3OSelWtLuBFN5rDj7p9ge9dDRRRRRRXLeKHe5cxp0iyBjucAn/AD7VkK26MH1FQCYwvtPQ9Kv21wDxnrWhDhhTmiDcUgt1XoeKlwoWqssuM88Cs57kvIQPWr1pIAVDNhScH6V0NleBo1EhxkA/Q9x+dXqKKKbJLHEAZHVc9Mnr9Kyr7VJRlYFEaf32PzH6Dt9awpJCylyxO2fJJ9DxVH7jMh42nFV7pdy5HWoLa5KPgnFblpeAgDP61dWYU8TKRjiq9xchQcGsm6vOoB60y1BY7zV6MljIg6iJm+la0b5kGOhdh+fP9atR3LvEoMjRsOhB9P8A9dWbe8k+7IyuR3KFf15H8qsi5UjhXPuo3D8xVWXUS6n7OpwDgyNgKPzrNlWebzHQ72GQzliqj8etZYjEbE/uyxIyyEn9SSTUwgMj3UI6uhYfUH/64rPvARMJR9yQAj8Rn/P0qFuRVC5jIbctMiuniI5q6mqYGCQfxpw1YeuPxqKbUC4O081FBG875PStWOLYoxVrTl33BOPvB4/0Bq9bgtZxyHqNjf8AjuP6VZYFYnZeCkhI/IgfqBUhSSTLpiRcb1QqCRn06fzFV3kiYjck6MBgqqB8H/gXI+h/limW++dBLMCFXKpEvBPsPQD16k57U11FzZzGRATGgeNP4FyCQMd/xzVPZhXUKONvAGOp9Pxq3ayBdQjLHiQKB/wJf8VFUb61dI2THCM0Y/D5x+hIrPQ5GD2qOWPcOnFZ9zBt5WqpBFCjJq1bw73FbNvEEHAqZzhcDrV7TYTFdhDztnH6xn/CrVuoWwZe4Rf/AENhUruyxysMchZPyIJ/macy4iiRW6xmIgHrj5T/ADFUFVZkV7mLe+0LkjpgYI/MGp4QovYRHkJ5JK59Dj/CkjbyraXP8UCf1FVhzLJjoI8n8NppzxHyI5E++EYL/vI2R/I1b1E/vHKjKyxLKv1U8/8AjpNc/ND5Uh2jj/6+P5Y/OmbciopIgwwRzVCa3Kk8UyKElgK1LeAIoq4i4FNUeZcxoOzA/rW/bRY1SZcdHjb/AMcYVHGNqz+oBP8A3zKx/rVlFVpYVPA2BT+RH+FQxoyxFRy0TD8dw2n/AMeGaS+hE8qSpuCugPHvX//Z",
+                "hospitalized":"false", 
+                "shared_patient":"false",
+                "new_events" :"true",
+                "unread_lab":"2",
+                "unread_rx":"0",
+                "unread_letter":"1",
+                "unread_messages":"6",
+                "future_appointments":"1" 
+            },
+            {
+                "id":"3",
+                "lastname":"Bekaert",
+                "firstname":"Gert",
+                "birthdate":"22/03/1982",
+                "photo":"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",
+                "hospitalized":"true", 
+                "shared_patient":"false",
+                "new_events" :"true",
+                "unread_lab":"5",
+                "unread_rx":"9",
+                "unread_letter":"0",
+                "unread_messages":"7",
+                "future_appointments":"3" 
+            }
+        ]
+
+## Patient Detailed Information [/patients/{id}/information{?token}]
+A single object with all its administrative patient details
+
++ parameters
+    + id (required, number, `1`) ... Numeric `id` of the patient.
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+    
+### Get Patient Details [GET]
++ Response 200 (application/json)
+
+        {
+            "id": "1",
+            "lastname": "Peter",
+            "firstname": "Jans",
+            "social_number": "770719-123-12",
+            "gender": "M",
+            "address": "Huppeldepupstraat 1",
+            "city": "Hoeselt",
+            "postal_code": "3730",
+            "phone": "0123/123456",
+            "cellphone": "0123/456789",
+            "email": "peter.jans@hotmail.com",
+            "admissions": [
+                {
+                    "id": "123456",
+                    "reason": "Operatie Knie",
+                    "treating_physician": "Dr. John Doe",
+                    "department": "2201 - Verpleegkundige Afdeling 1",
+                    "admission_time": "1418136343067", 
+                    "discharge_time": "1528136343067" 
+                },
+                {
+                    "id": "123457",
+                    "reason": "Onderzoek",
+                    "treating_physician": "Dr. Dre",
+                    "department": "2201 - Verpleegkundige Afdeling 1",
+                    "admission_time": "1418136343067", 
+                    "discharge_time": "1528136343067" 
+                },
+                {
+                    "id": "123458",
+                    "reason": "Spoedopname",
+                    "treating_physician": "Dr. Steve Baldwin",
+                    "department": "2201 - Verpleegkundige Afdeling 1",
+                    "admission_time": "1418136343067", 
+                    "discharge_time": "1528136343067" 
+                },
+                {
+                    "id": "123459",
+                    "reason": "Onderzoek",
+                    "treating_physician": "Dr. Arnold Schwarzenegger",
+                    "department": "2201 - Verpleegkundige Afdeling 1",
+                    "admission_time": "1418136343067", 
+                    "discharge_time": "1528136343067" 
+                },
+                {
+                    "id": "123460",
+                    "reason": "Onderzoek",
+                    "treating_physician": "Dr. John Doe",
+                    "department": "2201 - Verpleegkundige Afdeling 1",
+                    "admission_time": "1418136343067", 
+                    "discharge_time": "1528136343067" 
+                }
+            ],
+            "antecedents": [
+                {
+                    "label": "zware latexallergie",
+                    "time": "1418136343067",
+                    "remark": "Straf ..."
+                }
+            ],
+            "vaccinations": [
+                {
+                    "label": "Griepspuit",
+                    "start_date": "1418136343067",
+                    "end_date": "1698136343067"
+                }
+            ]
+                
+        }
+
+## Patient Messages [/patients/{id}/messages{?token}]
+A patient service to get the list of messages for a given patient
+
++ parameters
+    + id (required, number, `1`) ... Numeric `id` of the patient.
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+
+### Get all Messages [GET]
++ Response 200 (application/json)
+
+        [
+            {
+                "message_id":"1",
+                "sender_id":"123456",
+                "sender_name":"Robbie Denys",
+                "title":"this is a test",
+                "message":"test test test test test test test test test ...",
+                "creation_time":"1418136343067",
+                "read":"true",
+                "result_id":"1"
+            },
+            {
+                "message_id":"2",
+                "sender_id":"9618551",
+                "sender_name":"Peter De Charleroy",
+                "title":"this is a test as well",
+                "message":"test test test test test test test test test ...",
+                "creation_time":"1417136343067",
+                "read":"false",
+                "result_id":"2"
+            },
+            {
+                "message_id":"3",
+                "sender_id":"9618587",
+                "sender_name":"Barack Obama",
+                "title":"another test",
+                "message":"test test test test test test test test test ...",
+                "creation_time":"1417136563067",
+                "read":"false",
+                "meeting_id":"3"
+            },
+            {
+                "message_id":"4",
+                "sender_id":"9617951",
+                "sender_name":"Bill Clinton",
+                "title":"Still another test",
+                "message":"test test test test test test test test test ...",
+                "creation_time":"1417136385767",
+                "read":"true",
+                "result_id":"4"
+            },{
+                "message_id":"5",
+                "sender_id":"9618587",
+                "sender_name":"Barack Obama",
+                "title":"another test",
+                "message":"test test test test test test test test test ...",
+                "creation_time":"1417137815067",
+                "read":"false",
+                "message_id":"3"
+            }
+        ]
+
+### Create a new Message [POST]
++ Request (application/json)
+
+        [{
+            "token":"ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo",
+            "recipient_id":"123456",
+            "title":"another test",
+            "body":"test test test test test test test test test ...",
+            "creation_time":"1418136343067", /* time millis */
+            "result_id": "123456789"
+        }]
+
++ Response 200 (application/json)
+        
+## Patient Messages Status [/patients/{patient_id}/message{message_id}/unread{?token}]
+A patient service to mark a message as unread.
+
++ parameters
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+    + patient_id (required, number, `1`) ... Numeric `id` of the patient.
+    + message_id (required, number, `2`) ... Numeric `id` of the message.
+
+
+### Mark a Message as unread [POST]
++ Response 200 (application/json)
+
+        {
+            "success" : true
+        }
+        
+# Group Electronic Patient Record Results
+
+## Patient Results [/patients/{id}/results{?token}]
+A result service to get the list of results for a given patient
+
++ parameters
+    + id (required, number, `1`) ... Numeric `id` of the patient.
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+
+### Get all Results [GET]
++ Response 200 (application/json)
+
+        [
+            {
+                "result_id": "123",
+                "result_type":"LETTER",
+                "medical-date":"1418136343067", 
+                "physician":"Dr. Gert Claes",
+                "subject": "Letter",
+                "description":"Rx thorax face, profile",
+                "read": "false"
+            },
+            {
+                "result_id": "651",
+                "result_type":"LAB",
+                "medical-date":"1495136343067", 
+                "physician":"Dr. Tim S.",
+                "subject":"Labo",
+                "description":"Lab results",
+                "read": "false"
+            },
+            {
+                "result_id": "51",
+                "result_type":"RX",
+                "medical-date":"1418696343067", 
+                "physician":"Dr. Tim S.",
+                "subject":"RX",
+                "description":"RX thorax face",
+                "read": "false"
+            }
+        ]
+
+## Patient Result Details [/patients/{patient_id}/result/{result_id}{?token}]
+A Result service to get the details of a single result.
+This call will be used to retrieve all types of result (Lab, RX and letters).
+
+Along with retrieving the details of the result, the result will also be marked as read by the current practitioner.
+
+Generic approach by using the content tag that contains a list of 1 or more elements of type
+- TITLE
+- TEXT
+- FILE
+- TABLE
+
++ parameters
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+    + patient_id (required, number, `1`) ... Numeric `id` of the patient.
+    + result_id (required, number, `2`) ... Numeric `id` of the result.
+
+### Get Result Details [GET]
++ Response 200 (application/json)
+
+        {
+          "subject": "general subject of the result (f.e. Lab result)",
+          "description": "description of the result (f.e. LAB400 1356154)",
+          "person-list": [
+            {
+              "name": "Dr. Camps Kim",
+              "role": "validator"
+            }
+          ],
+          "status": "VALIDATED",
+          "result-type-label": "Lab results",
+          "result-type-code": "TYPE_2",
+          "medical-date": 1418696343067,
+          "prescriber": "Dr. Colson Conny",
+          "content": [
+            {
+              "type": "TITLE",
+              "value": "Title value (f.e. Document)"
+            },
+            {
+              "type": "TEXT",
+              "value": "A block of text that will contain line breaks in the format \n or \r and needs to be visualized unformatted",
+              "value_type: "text_type"
+            },
+            {
+              "type": "TABLE",
+              "data": [
+                {
+                  "description": "Glucose",
+                  "index": "L",
+                  "value": "188",
+                  "value-comment": "Comment for this value, which also can contain line breaks",
+                  "unit": "mg/dL",
+                  "reference-value": "70 - 100",
+                  "status": "Validated",
+                  "group-by": [
+                    "POCT",
+                    "01. Glucose"
+                  ]
+                },
+                {
+                  "description": "Product Ca*P",
+                  "index": "H",
+                  "value": "44.35",
+                  "value-comment": "",
+                  "unit": "mg²/dL²",
+                  "reference-value": "< 55.0",
+                  "status": "Validated",
+                  "group-by": [
+                    "POCT",
+                    "02. Ca*P"
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "FILE",
+              "file":"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",
+              "label": "Display document"
+            }
+          ]
+        }
+
+## Patient Result Status [/patients/{patient_id}/result/{result_id}/unread{?token}]
+Mark a single result as unread.
+
++ parameters
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+    + patient_id (required, number, `1`) ... Numeric `id` of the patient.
+    + result_id (required, number, `2`) ... Numeric `id` of the result.
+
+### Mark Result as unread [POST]
++ Response 200 (application/json)
+
+        {
+          "success": true
+        }
+
+
+# Group Electronic Patient Record Scheduling
+
+## Patient Appointments [/patients/{id}/appointments{?token}]
+A scheduling service to get the list of appointments for a given patient
+
++ parameters
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+    + id (required, number, `1`) ... Numeric `id` of the patient.
+
+### Get all Appointments [GET]
++ Response 200 (application/json)
+
+        [
+            {
+                "appointment_id":"1",
+                "appointment_type": {
+                    "label": "Consultatie Gastro-enterologie",
+                    "short-label": "Cons. Gastro-entero"
+                },
+                "physician": "Dr. Jan Janssen",
+                "site": "ZNA Middelheim",
+                "start-date":"3521321351431",
+                "read":"false"
+            },
+            {
+                "appointment_id":"2",
+                "appointment_type": {
+                    "label": "Consultatie Psychiatrie",
+                    "short-label": "Cons. Psychiatrie"
+                },
+                "physician": "Dr. Sigi Freud",
+                "site": "ZNA Middelheim",
+                "start-date":"3521123351431",
+                "read":"false"
+            }
+        ]
+
+## Patient Appointment Details [/patients/{patient_id}/appointments/{appointment_id}{?token}]
+A single object with all the details of an appointment.
+
+Along with retrieving the details of the appointment, the appointment will also be marked as read by the current practitioner.
+
+
++ parameters
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+    + patient_id (required, number, `1`) ... Numeric `id` of the patient.
+    + appointment_id (required, number, `2`) ... Numeric `id` of the result.
+
+### Get Appointment Details [GET]
++ Response 200 (application/json)
+
+        {
+            "appointment_type": {
+                "label": "Consultatie Gastro-enterologie",
+                "short-label": "Cons. Gastro-entero"
+            }
+            "start-date":"3521321351431",
+            "end-date":"3522321351431",
+            "status" : "Gepland"
+        }
+
+## Patient Appointment Status [/patients/{patient_id}/appointments/{appointment_id}/unread{?token}]
+Mark an appointment as unread.
+
++ parameters
+    + token (required, string, `ZmRzaGYgamtxIGZxaGprbGRxIGZoamxrIHFo`) ... Application token
+    + patient_id (required, number, `1`) ... Numeric `id` of the patient.
+    + appointment_id (required, number, `2`) ... Numeric `id` of the result.
+
+### Mark an Appointment as unread [POST]
++ Response 200 (application/json)
+
+        {
+            "success" : true
+        }
